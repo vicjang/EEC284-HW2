@@ -1,8 +1,10 @@
 # ==========================================
 #   EEC 284  HW-2
 #
-#     Dynamic programming for finding best
-#       schedule with minimum buffer size
+#     Dynamic programming for finding the
+#     schedule with minimum buffer size
+#
+#   vicjang@ucdavis.edu
 #
 # ==========================================
 
@@ -10,7 +12,6 @@
 # number of occurrences of each actors calculated in part a) manually
 qG = Array[ 4, 6, 9, 12, 4 ]
 produced = Array[ 3, 3, 4, 1 ]
-
 
 # ----------------------------------------------
 # A test sample from the reference paper
@@ -23,10 +24,10 @@ produced = Array[ 3, 3, 4, 1 ]
 # size of chain
 n = qG.size
 
-# array for $gcds's
+# declare the $gcds's array
 $gcds = Array.new( n ) { Array.new( n, 0 ) }
 
-
+# initialize the gcds
 qG.each_with_index do |x, index|
     $gcds[ index ][ index ] = x
     for j in index + 1 .. n - 1 do
@@ -34,19 +35,21 @@ qG.each_with_index do |x, index|
     end
 end
 
-# initialize subcosts array and $splitPositions array
+# declare subcosts array and $splitPositions array
 subcosts = Array.new( n ) { Array.new( n ) }
 $splitPositions =  Array.new( n ) { Array.new( n ) }
 
-# initialize some values
+# initialize part of the values
 subcosts.each_with_index do |x, index|
     subcosts[ index ][ index ] = 0
 end
 
-
+# calculate the rest of the values
 for chain_size in 2 .. n do
     for right in chain_size .. n do
         left = right - chain_size + 1
+
+        # the minimum starts as a very large number
         min_cost = 1e10
 
         for i in 0 .. chain_size - 2 do
@@ -63,8 +66,8 @@ for chain_size in 2 .. n do
 end
 
 
-#puts Subcosts
-#str = $splitPositions.inspect.split("], ")
+# in order to display the array in the form of an array
+# need to do some string processing
 str = $splitPositions.inspect
 str.gsub!( /], /, "]\n" )
 str.gsub!( /\[\[/, "\[" )
@@ -81,6 +84,7 @@ str.gsub!( /nil/, " " )
 puts str
 puts "\n"
 
+# the recursive function(method) that is used to generate the output
 def ConvertSplits( l, r )
     if( l == r )
         return ?A.ord + l
